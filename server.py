@@ -1,9 +1,8 @@
-from flask import Flask, request
-from flask_cors import CORS, cross_origin
-from flask_restful import Resource, Api
-from json import dumps
-from flask_jsonpify import jsonify
 from SPARQLWrapper import SPARQLWrapper, JSON
+from flask import Flask
+from flask_cors import CORS
+from flask_jsonpify import jsonify
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
 api = Api(app)
@@ -13,22 +12,10 @@ CORS(app)
 
 @app.route("/")
 def hello():
-    return jsonify({'text': 'Hello World!'})
+    return jsonify({'text': 'Happy Meal App works!'})
 
 
-class Employees(Resource):
-    def get(self):
-        return {'employees': [{'id': 1, 'name': 'Balram'}, {'id': 2, 'name': 'Tom'}]}
-
-
-class Employees_Name(Resource):
-    def get(self, employee_id):
-        print('Employee id:' + employee_id)
-        result = {'data': {'id': 1, 'name': 'Balram'}}
-        return jsonify(result)
-
-
-class Test(Resource):
+class subscribersNurtirments(Resource):
     def get(self):
         sparql = SPARQLWrapper("http://localhost:8080/sparql")
         sparql.setQuery("""
@@ -44,6 +31,7 @@ filter (?id > "1" && ?birth>="1990" && ?gender="S0 - Male" && ?ethnic="E0 - Non-
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
         return results
+
 
 class Subscribers(Resource):
     def get(self):
@@ -63,10 +51,8 @@ select *
         return results
 
 
-api.add_resource(Employees, '/employees')  # Route_1
-api.add_resource(Employees_Name, '/employees/<employee_id>')  # Route_3
-api.add_resource(Test, '/Test')  # route_4
-api.add_resource(Subscribers, '/Subscribers')  # route_4
+api.add_resource(subscribersNurtirments, '/subscribersNurtirments')  # route_1
+api.add_resource(Subscribers, '/Subscribers')  # route_2
 
 if __name__ == '__main__':
     app.run(port=5002)
